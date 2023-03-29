@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.figure import Figure
 import tkinter as tk
 from tkinter import filedialog
+from sklearn.linear_model import LinearRegression
 
 class EasyGraphApp(tk.Tk):
     def __init__(self):
@@ -25,7 +26,9 @@ class EasyGraphApp(tk.Tk):
         self.plot_button = tk.Button(container, text="Plot", width=20, command=self.plot_graph)
         self.plot_button.pack(padx=10,pady=10)
         self.data = None
-    
+        self.predict_button = tk.Button(container, text="Predict", width=20, command=self.predict_linear_regression)
+        self.predict_button.pack(side="right",padx=10, pady=10)
+
     def load_csv(self):
         file_path = filedialog.askopenfilename(filetypes=[("XLSX files", "*.xlsx")])
         if file_path:
@@ -53,6 +56,19 @@ class EasyGraphApp(tk.Tk):
             axes.legend()
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
+
+    def predict_linear_regression(self):
+        m2_train = self.data.iloc[:, 0]
+        pokoje_train = self.data.iloc[:, 1]
+        #lazienki = self.data.iloc[:, 2]
+        cena = self.data.iloc[:, 3]
+        x_test = self.data
+
+        lin_reg = LinearRegression()
+        lin_reg.fit(m2_train, pokoje_train, cena)
+
+        y_pred = lin_reg.predict(x_test)
+        tk.messagebox.print("Predicted values: ", y_pred)
         
 if __name__ == "__main__":
     app = EasyGraphApp()
