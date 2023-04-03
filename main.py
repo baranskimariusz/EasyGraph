@@ -13,15 +13,27 @@ class EasyGraphApp(tk.Tk):
         container = tk.Frame(self)
         container.pack()
 
-        self.button1 = tk.Button(container, text='Close', width=18, command=self.destroy)
-        self.button1.pack(side="right", padx=10, pady=10)
         self.button2 = tk.Button(container, text="Load data", width=18, command=self.load_csv)
         self.button2.pack(side="left", padx=10, pady=10)
-        self.plot_button = tk.Button(container, text="Plot", width=18, command=self.plot_graph)
-        self.plot_button.pack(side="left", padx=10,pady=10)
+        
+        self.plot_options = ["Line Plot", "Scatter Plot", "Bar Plot"]
+        self.selected_option = tk.StringVar()
+
+        self.plot_button = tk.Menubutton(container, text="Plot", width=18)
+        self.plot_button.pack(side="left", padx=10, pady=10)
+
+        self.plot_menu = tk.Menu(self.plot_button, tearoff=False)
+        self.plot_menu.add_command(label="Line plot", command=self.plot_graph)
+        self.plot_menu.add_command(label="Scatter plot", command=self.plot_graph_scatter)
+        self.plot_menu.add_command(label="Bar plot", command=self.plot_graph_bar)
+        self.plot_button.configure(menu=self.plot_menu)
+
         self.data = None
-        self.stats_button = tk.Button(container, text="Show statistics", width=18, command=self.show_stats)
+        self.stats_button = tk.Button(container, text="Statistics", width=18, command=self.show_stats)
         self.stats_button.pack(side="left", padx=10,pady=10)
+
+        self.button1 = tk.Button(container, text='Close', width=18, command=self.destroy)
+        self.button1.pack(side="right", padx=10, pady=10)
     
     def load_csv(self):
         file_path = filedialog.askopenfilename(filetypes=[("XLSX files", "*.xlsx")])
@@ -51,6 +63,42 @@ class EasyGraphApp(tk.Tk):
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
+    def plot_graph_scatter(self):
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8013e58 (Added scatter plot function)
+        if self.data is not None:
+            if len(self.data.columns) < 2:
+                tk.messagebox.showerror("Error", "The loaded Excel file must have at least 2 columns.")
+                return
+
+            figure = Figure(figsize=(5, 5), dpi=100)
+            canvas = FigureCanvasTkAgg(figure, self)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            NavigationToolbar2Tk(canvas, self)
+            axes = figure.add_subplot()
+            x_values = range(0, len(self.data))
+            axes.scatter(x_values, self.data.iloc[:, 0], label=self.data.columns[0])
+            axes.scatter(x_values, self.data.iloc[:, 1], label=self.data.columns[1])
+            axes.legend()
+            axes.set_xlabel("Observations")
+            axes.set_ylabel(self.data.columns[1])
+            axes.set_xlim([0, len(self.data)])
+        else:
+            tk.messagebox.showerror("Error", "No data has been loaded.")
+<<<<<<< HEAD
+=======
+        return None
+>>>>>>> 6e294d1 (Added dropdown menu to Plot button)
+=======
+        return None
+>>>>>>> 8013e58 (Added scatter plot function)
+
+    def plot_graph_bar(self):
+        return None
+    
     def show_stats(self):
         if self.data is not None:
             stats = self.data.describe()
@@ -62,7 +110,6 @@ class EasyGraphApp(tk.Tk):
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
-        
 if __name__ == "__main__":
     app = EasyGraphApp()
     app.mainloop()
