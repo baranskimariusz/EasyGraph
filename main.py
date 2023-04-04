@@ -64,10 +64,6 @@ class EasyGraphApp(tk.Tk):
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
     def plot_graph_scatter(self):
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 8013e58 (Added scatter plot function)
         if self.data is not None:
             if len(self.data.columns) < 2:
                 tk.messagebox.showerror("Error", "The loaded Excel file must have at least 2 columns.")
@@ -88,16 +84,30 @@ class EasyGraphApp(tk.Tk):
             axes.set_xlim([0, len(self.data)])
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
-<<<<<<< HEAD
-=======
-        return None
->>>>>>> 6e294d1 (Added dropdown menu to Plot button)
-=======
-        return None
->>>>>>> 8013e58 (Added scatter plot function)
 
     def plot_graph_bar(self):
-        return None
+        if self.data is not None:
+            if len(self.data.columns) < 2:
+                tk.messagebox.showerror("Error", "The loaded Excel file must have at least 2 columns.")
+                return
+    
+            figure = Figure(figsize=(5, 5), dpi=100)
+            canvas = FigureCanvasTkAgg(figure, self)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            NavigationToolbar2Tk(canvas, self)
+            axes = figure.add_subplot()
+            x_values = range(len(self.data))
+            y_values1 = self.data.iloc[:, 0]
+            y_values2 = self.data.iloc[:, 1]
+            axes.bar(x_values, y_values1, label=self.data.columns[0])
+            axes.bar(x_values, y_values2, label=self.data.columns[1])
+            axes.set_xlabel("Observation")
+            axes.set_ylabel("Value")
+            axes.set_title("Bar Graph")
+            axes.legend()
+        else:
+            tk.messagebox.showerror("Error", "No data has been loaded.")
     
     def show_stats(self):
         if self.data is not None:
