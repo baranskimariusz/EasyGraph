@@ -123,10 +123,12 @@ class EasyGraphApp(tk.Tk):
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
-    def add_data(self, new_column):
+    def add_data(self):
         if self.data is not None:
-            variable_name = tk.simpledialog.askstring("New variable", "Enter the new variable's data:", parent=self)
-            self.data[variable_name] = new_column
+            variable_name = tk.simpledialog.askstring("Name", "Enter name of the new variable: ", parent=self)
+            for i in range(len(self.data)):
+                new_data = tk.simpledialog.askstring("Input", f"Enter data for row {i+1}: ", parent=self)
+                self.data.loc[i, variable_name] = new_data
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
