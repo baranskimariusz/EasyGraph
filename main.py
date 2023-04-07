@@ -7,19 +7,19 @@ class EasyGraphApp(tk.Tk):
         super().__init__()
         self.title("EasyGraph")
         screen_width = self.winfo_screenwidth(); screen_height = self.winfo_screenheight()
-        ww=900; wh=550
+        ww=950; wh=570
         x = int((screen_width/2) - (ww/2)); y = int((screen_height/2.15) - (wh/2))
         self.geometry(f"{ww}x{wh}+{x}+{y}")
         container = tk.Frame(self)
         container.pack()
 
-        self.button2 = tk.Button(container, text="Load data", width=18, command=self.load_csv)
+        self.button2 = tk.Button(container, text="Load data", width=15, command=self.load_csv)
         self.button2.pack(side="left", padx=10, pady=10)
         
         self.plot_options = ["Line Plot", "Scatter Plot", "Bar Plot"]
         self.selected_option = tk.StringVar()
 
-        self.plot_button = tk.Menubutton(container, text="Plot", width=18)
+        self.plot_button = tk.Menubutton(container, text="Plot", width=15)
         self.plot_button.pack(side="left", padx=10, pady=10)
 
         self.plot_menu = tk.Menu(self.plot_button, tearoff=False)
@@ -28,11 +28,14 @@ class EasyGraphApp(tk.Tk):
         self.plot_menu.add_command(label="Bar plot", command=self.plot_graph_bar)
         self.plot_button.configure(menu=self.plot_menu)
 
+        self.button1 = tk.Button(container, text='Add data', width=15, command=self.add_data)
+        self.button1.pack(side="left", padx=10, pady=10)
+
         self.data = None
-        self.stats_button = tk.Button(container, text="Statistics", width=18, command=self.show_stats)
+        self.stats_button = tk.Button(container, text="Statistics", width=15, command=self.show_stats)
         self.stats_button.pack(side="left", padx=10,pady=10)
 
-        self.button1 = tk.Button(container, text='Close', width=18, command=self.destroy)
+        self.button1 = tk.Button(container, text='Close', width=15, command=self.destroy)
         self.button1.pack(side="right", padx=10, pady=10)
     
     def load_csv(self):
@@ -117,6 +120,13 @@ class EasyGraphApp(tk.Tk):
             text = Text(popup, bd=5, height=10, width=50, bg='black')
             text.pack()
             text.insert(tk.END, stats)
+        else:
+            tk.messagebox.showerror("Error", "No data has been loaded.")
+
+    def add_data(self, new_column):
+        if self.data is not None:
+            variable_name = tk.simpledialog.askstring("New variable", "Enter the new variable's data:", parent=self)
+            self.data[variable_name] = new_column
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
