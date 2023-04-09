@@ -129,6 +129,8 @@ class EasyGraphApp(tk.Tk):
             for i in range(len(self.data)):
                 new_data = tk.simpledialog.askstring("Input", f"Enter data for row {i+1}: ", parent=self)
                 self.data.loc[i, variable_name] = new_data
+            #self.data.update(new_data, overwrite=True, errors='ignore')
+            print(self.data)
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
