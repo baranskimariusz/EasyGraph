@@ -1,7 +1,8 @@
 import pandas as pd
 import matplotlib; matplotlib.use('TkAgg'); import matplotlib.pyplot as plt; from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk); from matplotlib.figure import Figure
 import tkinter as tk; from tkinter import filedialog; from tkinter import *
-import sklearn as sk
+import sklearn as sk; from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 class EasyGraphApp(tk.Tk):
     def __init__(self):
         super().__init__()
