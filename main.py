@@ -44,9 +44,6 @@ class EasyGraphApp(tk.Tk):
                 tk.messagebox.showerror("Error", "The loaded Excel file must have at least 2 columns.")
                 return
 
-            xlabel = tk.simpledialog.askstring("X Label", "Enter the x label:", parent=self)
-            ylabel = tk.simpledialog.askstring("Y Label", "Enter the y label:", parent=self)
-
             figure = Figure(figsize=(5, 5), dpi=100)
             self.canvas = FigureCanvasTkAgg(figure, self)
             self.canvas.draw()
@@ -56,8 +53,6 @@ class EasyGraphApp(tk.Tk):
 
             for i in range(num_columns):
                 axes.plot(self.data.iloc[:, i], label=self.data.columns[i])
-            axes.set_xlabel(xlabel)
-            axes.set_ylabel(ylabel)
             axes.legend()
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
