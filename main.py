@@ -12,24 +12,25 @@ class EasyGraphApp(tk.Tk):
         self.geometry(f"{ww}x{wh}+{x}+{y}")
         container = tk.Frame(self)
         container.pack()
+        self.canvas = None
 
-        self.button2 = tk.Button(container, text="Load data", width=13, command=self.load_csv)
+        self.button2 = tk.Button(container, text="Load data", width=11, command=self.load_csv)
         self.button2.pack(side="left", padx=10, pady=10)
 
-        self.button_plot = tk.Button(container, text="Line plot", width=13, command=self.plot_graph)
+        self.button_plot = tk.Button(container, text="Line plot", width=11, command=self.plot_graph)
         self.button_plot.pack(side="left", padx=10, pady=10)
         
-        self.button_del_graph = tk.Button(container, text="Delete graph", width=13, command=self.delete_graph)
+        self.button_del_graph = tk.Button(container, text="Delete graph", width=11, command=self.delete_graph)
         self.button_del_graph.pack(side="left", padx=10, pady=10)
 
-        self.button1 = tk.Button(container, text='Add data', width=13, command=self.add_data)
+        self.button1 = tk.Button(container, text='Add data', width=11, command=self.add_data)
         self.button1.pack(side="left", padx=10, pady=10)
 
         self.data = None
-        self.stats_button = tk.Button(container, text="Statistics", width=13, command=self.show_stats)
+        self.stats_button = tk.Button(container, text="Statistics", width=11, command=self.show_stats)
         self.stats_button.pack(side="left", padx=10,pady=10)
 
-        self.button1 = tk.Button(container, text='Close', width=13, command=self.destroy)
+        self.button1 = tk.Button(container, text='Close', width=11, command=self.destroy)
         self.button1.pack(side="right", padx=10, pady=10)
     
     def load_csv(self):
@@ -40,8 +41,8 @@ class EasyGraphApp(tk.Tk):
     def plot_graph(self):
         if self.data is not None:
             num_columns = len(self.data.columns)
-            if num_columns < 2:
-                tk.messagebox.showerror("Error", "The loaded Excel file must have at least 2 columns.")
+            if num_columns != 2:
+                tk.messagebox.showerror("Error", "The loaded Excel file must have 2 columns.")
                 return
 
             figure = Figure(figsize=(5, 5), dpi=100)
@@ -58,7 +59,7 @@ class EasyGraphApp(tk.Tk):
             tk.messagebox.showerror("Error", "No data has been loaded.")
     
     def delete_graph(self):
-        if self.canvas:
+        if self.canvas != None:
             self.canvas.get_tk_widget().destroy()
         else:
             tk.messagebox.showinfo("Information", "No graph is currently displayed.")
