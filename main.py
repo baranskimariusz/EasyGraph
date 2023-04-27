@@ -1,13 +1,13 @@
 import pandas as pd
 import matplotlib; matplotlib.use('TkAgg'); import matplotlib.pyplot as plt; from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk); from matplotlib.figure import Figure
 import tkinter as tk; from tkinter import filedialog; from tkinter import *
-import sklearn as sk
+from sklearn import datasets, linear_model; from sklearn.linear_model import LinearRegression; from sklearn.metrics import mean_squared_error, r2_score
 class EasyGraphApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("EasyGraph")
         screen_width = self.winfo_screenwidth(); screen_height = self.winfo_screenheight()
-        ww=950; wh=570
+        ww=1100; wh=680
         x = int((screen_width/2) - (ww/2)); y = int((screen_height/2.15) - (wh/2))
         self.geometry(f"{ww}x{wh}+{x}+{y}")
         container = tk.Frame(self)
@@ -19,6 +19,9 @@ class EasyGraphApp(tk.Tk):
 
         self.button_plot = tk.Button(container, text="Line plot", width=11, command=self.plot_graph)
         self.button_plot.pack(side="left", padx=10, pady=10)
+
+        self.button_linreg = tk.Button(container, text="Linear Regression", width=11, command=self.create_linear_reg)
+        self.button_linreg.pack(side="left", padx=10, pady=10)
         
         self.button_del_graph = tk.Button(container, text="Delete graph", width=11, command=self.delete_graph)
         self.button_del_graph.pack(side="left", padx=10, pady=10)
@@ -54,6 +57,40 @@ class EasyGraphApp(tk.Tk):
 
             for i in range(num_columns):
                 axes.plot(self.data.iloc[:, i], label=self.data.columns[i])
+            axes.legend()
+    
+    def create_linear_reg(self):
+        if self.data is not None:
+            num_columns = len(self.data.columns)
+            if num_columns != 2:
+                    tk.messagebox.showerror("Error", "The loaded Excel file must have 2 columns.")
+                    return
+
+            A = self.data.iloc[:, 0].values.reshape(-1, 1)
+            B = self.data.iloc[:, 1].values
+
+            if len(A) < 21:
+                tk.messagebox.showerror("Error", "Not enough data points. A minimum of 21 data points is required.")
+                return
+
+            A_train = A[:-20]
+            B_train = B[:-20]
+
+            A_test = A[-20:]
+            B_test = B[-20:]
+
+            lin_reg = linear_model.LinearRegression()
+            lin_reg.fit(A_train, B_train)
+            pred = lin_reg.predict(A_test)
+
+            figure = Figure(figsize=(5, 5), dpi=100)
+            self.canvas = FigureCanvasTkAgg(figure, self)
+            self.canvas.draw()
+            self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            NavigationToolbar2Tk(self.canvas, self)
+            axes = figure.add_subplot()
+            axes.scatter(A_test, B_test)
+            axes.plot(A_test, pred)
             axes.legend()
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
