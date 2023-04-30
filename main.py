@@ -13,6 +13,11 @@ class EasyGraphApp(tk.Tk):
         container = tk.Frame(self)
         container.pack()
         self.canvas = None
+        self.line_plot_canvas = None
+        self.lin_reg_canvas = None
+        self.data = None
+        self.line_plot_window = None
+        self.lin_reg_window = None
 
         self.button2 = tk.Button(container, text="Load data", width=11, command=self.load_csv)
         self.button2.pack(side="left", padx=10, pady=10)
@@ -26,10 +31,6 @@ class EasyGraphApp(tk.Tk):
         self.button_del_graph = tk.Button(container, text="Delete graph", width=11, command=self.delete_graph)
         self.button_del_graph.pack(side="left", padx=10, pady=10)
 
-        self.button1 = tk.Button(container, text='Add data', width=11, command=self.add_data)
-        self.button1.pack(side="left", padx=10, pady=10)
-
-        self.data = None
         self.stats_button = tk.Button(container, text="Statistics", width=11, command=self.show_stats)
         self.stats_button.pack(side="left", padx=10,pady=10)
 
@@ -48,11 +49,13 @@ class EasyGraphApp(tk.Tk):
                 tk.messagebox.showerror("Error", "The loaded Excel file must have 2 columns.")
                 return
 
-            figure = Figure(figsize=(5, 5), dpi=100)
-            self.canvas = FigureCanvasTkAgg(figure, self)
-            self.canvas.draw()
-            self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-            NavigationToolbar2Tk(self.canvas, self)
+            figure = Figure(figsize=(9, 6), dpi=100)
+            self.line_plot_window = Toplevel(self)
+            self.line_plot_window.title("Line Plot")
+            self.line_plot_canvas = FigureCanvasTkAgg(figure, self.line_plot_window)
+            self.line_plot_canvas.draw()
+            self.line_plot_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            NavigationToolbar2Tk(self.line_plot_canvas, self.line_plot_window)
             axes = figure.add_subplot()
 
             for i in range(num_columns):
@@ -83,11 +86,13 @@ class EasyGraphApp(tk.Tk):
             lin_reg.fit(A_train, B_train)
             pred = lin_reg.predict(A_test)
 
-            figure = Figure(figsize=(5, 5), dpi=100)
-            self.canvas = FigureCanvasTkAgg(figure, self)
-            self.canvas.draw()
-            self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-            NavigationToolbar2Tk(self.canvas, self)
+            figure = Figure(figsize=(9, 6), dpi=100)
+            self.lin_reg_window = Toplevel(self)
+            self.lin_reg_window.title("Linear Regression")
+            self.lin_reg_canvas = FigureCanvasTkAgg(figure, self.lin_reg_window)
+            self.lin_reg_canvas.draw()
+            self.lin_reg_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+            NavigationToolbar2Tk(self.lin_reg_canvas, self.lin_reg_window)
             axes = figure.add_subplot()
             axes.scatter(A_test, B_test)
             axes.plot(A_test, pred)
@@ -96,10 +101,15 @@ class EasyGraphApp(tk.Tk):
             tk.messagebox.showerror("Error", "No data has been loaded.")
     
     def delete_graph(self):
-        if self.canvas != None:
-            self.canvas.get_tk_widget().destroy()
+        if self.line_plot_window is not None:
+            self.line_plot_window.destroy()
+            self.line_plot_window = None
+        elif self.lin_reg_window is not None:
+            self.lin_reg_window.destroy()
+            self.lin_reg_window = None
         else:
             tk.messagebox.showinfo("Information", "No graph is currently displayed.")
+
 
     def show_stats(self):
         if self.data is not None:
@@ -112,15 +122,6 @@ class EasyGraphApp(tk.Tk):
         else:
             tk.messagebox.showerror("Error", "No data has been loaded.")
 
-    def add_data(self):
-        if self.data is not None:
-            variable_name = tk.simpledialog.askstring("Name", "Enter name of the new variable: ", parent=self)
-            for i in range(len(self.data)):
-                new_data = tk.simpledialog.askstring("Input", f"Enter data for row {i+1}: ", parent=self)
-                self.data.loc[i, variable_name] = new_data
-            #self.data.update(new_data, overwrite=True, errors='ignore')
-        else:
-            tk.messagebox.showerror("Error", "No data has been loaded.")
 
 if __name__ == "__main__":
     app = EasyGraphApp()
